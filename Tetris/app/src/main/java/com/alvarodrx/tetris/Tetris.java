@@ -112,13 +112,14 @@ public class Tetris extends AppCompatActivity {
 
             for (int j = 0; j < BOARD_WIDTH; ++j) {
 
-                Shape.Tetrominoe shape = shapeAt(j, BOARD_HEIGHT - i );
+                Shape.Tetrominoe shape = shapeAt(j, BOARD_HEIGHT - i - 1);
                 Log.d("ShapeAt",": "+i+" "+j);
 
                 if (shape != Shape.Tetrominoe.NoShape) {
-
+                    Log.d("MSG", "Llenos");
                     drawSquare(gl, j, i, shape);
                 }else{
+                    Log.d("MSG", "Vacios");
                     drawVacSquare(gl, j, i);
                 }
             }
@@ -131,15 +132,15 @@ public class Tetris extends AppCompatActivity {
 
                 int x = curX + curPiece.x(i);
                 int y = curY + curPiece.y(i);
-                drawSquare(gl, x,BOARD_HEIGHT  - y,
+                if(y != BOARD_HEIGHT)
+                    drawSquare(gl, x, (BOARD_HEIGHT - y -1),
                         curPiece.getShape());
             }
         }
     }
     private void drawSquare(GridLayout g, int x, int y,
                             Shape.Tetrominoe shape) {
-        Log.d("MSG", "draw");
-
+        Log.d("drow",": "+x+" "+y);
         int colors[] = {
                 R.drawable.block_vacio,
                 R.drawable.block_rojo,
@@ -152,13 +153,13 @@ public class Tetris extends AppCompatActivity {
         };
 
         int color = colors[shape.ordinal()];
-        ImageView imgAt = (ImageView) gl.getChildAt(x*BOARD_HEIGHT+y);
+        ImageView imgAt = (ImageView) gl.getChildAt(y*BOARD_WIDTH+x);
         imgAt.setImageResource(color);
     }
 
     private void drawVacSquare(GridLayout g, int x, int y) {
         Log.d("MSG", "draw2");
-        ImageView imgAt = (ImageView) gl.getChildAt(x*BOARD_WIDTH+y);
+        ImageView imgAt = (ImageView) gl.getChildAt(y*BOARD_WIDTH+x);
         imgAt.setImageResource(R.drawable.block_vacio);
     }
 
