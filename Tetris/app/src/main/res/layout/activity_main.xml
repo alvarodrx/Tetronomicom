@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/general_background"
+    android:background="@drawable/back_01"
     tools:context=".Tetris">
 
     <LinearLayout
@@ -26,11 +26,11 @@
             android:layout_marginTop="1dp"
             android:layout_marginRight="1dp"
             android:layout_marginBottom="1dp"
+            android:columnCount="10"
             android:paddingLeft="1dp"
             android:paddingTop="1dp"
             android:paddingRight="1dp"
             android:paddingBottom="1dp"
-            android:columnCount="10"
             android:rowCount="12">
 
 
@@ -46,7 +46,8 @@
                 android:layout_width="100dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
-                android:background="@drawable/rotate_left" />
+                android:background="@drawable/rot_left"
+                android:onClick="rotateLeft" />
 
             <LinearLayout
                 android:layout_width="150dp"
@@ -65,14 +66,16 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:background="@drawable/arrow_left" />
+                        android:background="@drawable/arrow_left"
+                        android:onClick="moveLeft" />
 
                     <Button
                         android:id="@+id/button4"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:background="@drawable/arrow_right" />
+                        android:background="@drawable/arrow_right"
+                        android:onClick="moveRight" />
                 </LinearLayout>
 
                 <Button
@@ -80,7 +83,8 @@
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
                     android:layout_weight="1"
-                    android:background="@drawable/arrow_down" />
+                    android:background="@drawable/arrow_down"
+                    android:onClick="moveDown" />
 
             </LinearLayout>
 
@@ -89,7 +93,8 @@
                 android:layout_width="100dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
-                android:background="@drawable/rotate_right" />
+                android:background="@drawable/rot_right"
+                android:onClick="rotateRight" />
         </LinearLayout>
 
     </LinearLayout>

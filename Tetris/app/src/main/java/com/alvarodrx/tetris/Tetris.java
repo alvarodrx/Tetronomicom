@@ -5,10 +5,12 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.Layout;
 import android.util.Log;
+import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewGroup.LayoutParams;
 import android.widget.GridLayout;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import java.util.Timer;
 import java.util.TimerTask;
@@ -34,6 +36,29 @@ public class Tetris extends AppCompatActivity {
 
     Handler handler;
 
+    public void rotateLeft(View v){
+        tryMove(curPiece, curX - 1, curY);
+    }
+
+    public void rotateRight(View v){
+        tryMove(curPiece.rotateRight(), curX, curY);
+    }
+
+    public void moveRight(View v){
+        tryMove(curPiece, curX + 1, curY);
+    }
+
+    public void moveLeft(View v){
+        tryMove(curPiece, curX - 1, curY);
+    }
+
+    public void moveDown(View v){
+        dropDown();
+    }
+
+    public void moveOLDown(View v){
+        oneLineDown();
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,8 +79,11 @@ public class Tetris extends AppCompatActivity {
         Runnable run = new Runnable() {
             @Override
             public void run() {
-                doGameCycle();
-                handler.postDelayed(this,1000);
+                if(!isPaused){
+                    doGameCycle();
+                    handler.postDelayed(this,1000);
+                }
+
 
             }
         };
@@ -113,14 +141,13 @@ public class Tetris extends AppCompatActivity {
             for (int j = 0; j < BOARD_WIDTH; ++j) {
 
                 Shape.Tetrominoe shape = shapeAt(j, BOARD_HEIGHT - i - 1);
-                Log.d("ShapeAt",": "+i+" "+j);
 
                 if (shape != Shape.Tetrominoe.NoShape) {
                     Log.d("MSG", "Llenos");
-                    drawSquare(gl, j, i, shape);
+                    drawSquare(gl, j, i , shape);
                 }else{
                     Log.d("MSG", "Vacios");
-                    drawVacSquare(gl, j, i);
+                    drawVacSquare(gl, j,  i);
                 }
             }
         }
@@ -131,7 +158,7 @@ public class Tetris extends AppCompatActivity {
             for (int i = 0; i < 4; ++i) {
 
                 int x = curX + curPiece.x(i);
-                int y = curY + curPiece.y(i);
+                int y = curY - curPiece.y(i);
                 if(y != BOARD_HEIGHT)
                     drawSquare(gl, x, (BOARD_HEIGHT - y -1),
                         curPiece.getShape());
@@ -205,18 +232,22 @@ public class Tetris extends AppCompatActivity {
         }
     }
 
+    private void gameOver(){
+        isPaused = true;
+        isStarted = false;
+        Toast toast1 = Toast.makeText(getApplicationContext(),"Game Over", Toast.LENGTH_SHORT);
+        toast1.show();
+    }
     private void newPiece() {
 
         curPiece.setRandomShape();
-        curX = BOARD_WIDTH / 2 + 1;
+        curX = BOARD_WIDTH / 2;
         curY = BOARD_HEIGHT - 1 + curPiece.minY();
         Log.d("MSG","newPiece");
         if (!tryMove(curPiece, curX, curY)) {
             Log.d("MSG","newPiece - - -");
             curPiece.setShape(Shape.Tetrominoe.NoShape);
-            //timer.cancel();
-            isStarted = false;
-            //statusbar.setText("Game over");
+            gameOver();
         }
     }
 
