@@ -8,8 +8,10 @@ import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewGroup.LayoutParams;
+import android.widget.Button;
 import android.widget.GridLayout;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.Timer;
@@ -33,11 +35,21 @@ public class Tetris extends AppCompatActivity {
     private Shape curPiece;
     private Shape.Tetrominoe[] board;
     private GridLayout gl;
+    private Button startBtn;
+    private int velocidad = 1500;
+    private int cuenta = 0;
+    private int nivel = 1;
+    private TextView rotulo;
 
     Handler handler;
 
+    public void startGame(View v){
+        start();
+        v.setVisibility(View.INVISIBLE);
+    }
+
     public void rotateLeft(View v){
-        tryMove(curPiece, curX - 1, curY);
+        tryMove(curPiece.rotateLeft(), curX, curY);
     }
 
     public void rotateRight(View v){
@@ -65,8 +77,10 @@ public class Tetris extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         gl = (GridLayout) findViewById(R.id.gridl1);
+        startBtn = findViewById(R.id.startbtn);
+        rotulo = findViewById(R.id.rotulo);
         handler = new Handler();
-        initBoard();
+        //initBoard();
     }
 
     private void initBoard() {
@@ -79,9 +93,14 @@ public class Tetris extends AppCompatActivity {
         Runnable run = new Runnable() {
             @Override
             public void run() {
-                if(!isPaused){
+                if(!isPaused && isStarted){
                     doGameCycle();
-                    handler.postDelayed(this,1000);
+                    handler.postDelayed(this,velocidad);
+                    if(velocidad > 200 && (cuenta/10 > nivel)){
+                        velocidad -= 100;
+                        nivel++;
+                        rotulo.setText("Nivel: "+ nivel + "\tPiezas: " + cuenta);
+                    }
                 }
 
 
@@ -112,8 +131,10 @@ public class Tetris extends AppCompatActivity {
     public void start() {
 
         isStarted = true;
-        clearBoard();
-        newPiece();
+        isPaused = false;
+        //clearBoard();
+        //newPiece();
+        initBoard();
     }
 
     private void pause() {
@@ -237,9 +258,12 @@ public class Tetris extends AppCompatActivity {
         isStarted = false;
         Toast toast1 = Toast.makeText(getApplicationContext(),"Game Over", Toast.LENGTH_SHORT);
         toast1.show();
+        startBtn.setVisibility(View.VISIBLE);
+        startBtn.setText("Reiniciar");
     }
     private void newPiece() {
-
+        cuenta++;
+        rotulo.setText("Nivel: "+ nivel + "\tPiezas: " + cuenta);
         curPiece.setRandomShape();
         curX = BOARD_WIDTH / 2;
         curY = BOARD_HEIGHT - 1 + curPiece.minY();
